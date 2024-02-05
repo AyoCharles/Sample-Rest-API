@@ -1,5 +1,6 @@
 const searchBar = document.getElementById('search-bar');
 const cardContainer = document.getElementById('card-container');
+const filterRegion = document.getElementById('filter-region');
 
 async function getCountries() {
     const response = await fetch('https://restcountries.com/v3.1/independent?status=true', {method: 'get'});
@@ -10,11 +11,19 @@ async function getCountries() {
 
 const displayCountryData = async () => {
     let queryNation = searchBar.value;
-    console.log(queryNation);
+    let region = filterRegion.value;
+    console.log(region);
 
     const countryData = await getCountries();
     
-    let displayData = countryData.filter((nation) => {
+    let displayData = countryData.filter((regionData) => {
+        console.log(regionData);
+        if(region === '') {
+            return regionData;
+        } else if(regionData.continents[0].toLowerCase().includes(region.toLowerCase())) {
+            return regionData;
+        }
+    }).filter((nation) => {
         if(queryNation === '') {
             return nation;
         } else if(nation.name.common.toLowerCase().includes(queryNation.toLowerCase())) {
@@ -40,6 +49,10 @@ const displayCountryData = async () => {
 displayCountryData();
 
 searchBar.addEventListener('input', () => {
+    displayCountryData();
+})
+
+filterRegion.addEventListener('input', () => {
     displayCountryData();
 })
 
